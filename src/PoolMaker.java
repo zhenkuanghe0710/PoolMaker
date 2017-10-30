@@ -1,9 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 public class PoolMaker {
 
@@ -70,6 +67,16 @@ public class PoolMaker {
         return players;
     }
 
+    private Set<String> getFullClubSet(ArrayList<Competitor> players){
+        Set<String> fullClubSet = new HashSet<>();
+        for (Competitor player : players) {
+            if (player.getClubName() != null && !player.getClubName().equals("")) {
+                fullClubSet.add(player.getClubName());
+            }
+        }
+        return fullClubSet;
+    }
+
     private ArrayList<Integer> generateDistributedPoolChainList(int playersAmount) {
 
         int poolAmount = 0;
@@ -133,7 +140,34 @@ public class PoolMaker {
         return distributedPools;
     }
 
+    public ArrayList<String> gotNotBalancedClub(ArrayList<ArrayList<Competitor>> distributedPools, Set<String> fullClubSet){
 
+        ArrayList<Integer> sameClubPlayerAmountList;
+        int playerCount;
+        ArrayList<String> notBalancedClubsList = new ArrayList<>();
+
+        for (String clubName : fullClubSet){
+            sameClubPlayerAmountList = new ArrayList<>();
+
+            for (ArrayList<Competitor> pool : distributedPools){
+                playerCount = 0;
+
+                for (Competitor player: pool){
+                    if (player.getClubName().equals(clubName)){
+                        playerCount ++;
+                    }
+                }
+
+                sameClubPlayerAmountList.add(playerCount);
+            }
+
+            if (Collections.max(sameClubPlayerAmountList) - Collections.min(sameClubPlayerAmountList) >= 2){
+                notBalancedClubsList.add(clubName);
+            }
+        }
+
+        return notBalancedClubsList;
+    }
 
     public static void main(String[] args) {
 
@@ -197,6 +231,8 @@ public class PoolMaker {
 
         }
 
+        Set<String> fullClubSet = poolMaker.getFullClubSet(competitorsList);
+        System.out.println(fullClubSet);
 
     }
 }
