@@ -140,38 +140,85 @@ public class PoolMaker {
         return distributedPools;
     }
 
-    public ArrayList<String> gotNotBalancedClub(ArrayList<ArrayList<Competitor>> distributedPools, Set<String> fullClubSet){
-
-        ArrayList<Integer> sameClubPlayerAmountList;
+    public ArrayList<Integer> getSameClubPlayerAmountList(ArrayList<ArrayList<Competitor>> distributedPools, String clubName){
+        ArrayList<Integer> sameClubPlayerAmountList = new ArrayList<>();
         int playerCount;
-        ArrayList<String> notBalancedClubsList = new ArrayList<>();
 
-        for (String clubName : fullClubSet){
-            sameClubPlayerAmountList = new ArrayList<>();
+        for (ArrayList<Competitor> pool : distributedPools){
+            playerCount = 0;
 
-            for (ArrayList<Competitor> pool : distributedPools){
-                playerCount = 0;
-
-                for (Competitor player: pool){
-                    if (player.getClubName().equals(clubName)){
-                        playerCount ++;
-                    }
+            for (Competitor player: pool){
+                if (player.getClubName().equals(clubName)){
+                    playerCount ++;
                 }
-
-                sameClubPlayerAmountList.add(playerCount);
             }
 
-            if (Collections.max(sameClubPlayerAmountList) - Collections.min(sameClubPlayerAmountList) >= 2){
-                notBalancedClubsList.add(clubName);
+            sameClubPlayerAmountList.add(playerCount);
+        }
+
+        return sameClubPlayerAmountList;
+    }
+
+    public boolean isBalancedClub(ArrayList<Integer> sameClubPlayerAmountList){
+        if (Collections.max(sameClubPlayerAmountList) - Collections.min(sameClubPlayerAmountList) >= 2){
+            return false;
+        }
+        return true;
+    }
+
+    public void handleNotBalancedClub(ArrayList<ArrayList<Competitor>> distributedPools, Set<String> fullClubSet){
+
+        ArrayList<Integer> sameClubPlayerAmountList;
+        String[] fullClubArray = fullClubSet.toArray(new String[fullClubSet.size()]);
+
+        for (int i=0; i<fullClubSet.size(); i++){
+            String clubName = fullClubArray[i];
+            sameClubPlayerAmountList = getSameClubPlayerAmountList(distributedPools, clubName);
+
+            if (sameClubPlayerAmountList != null && !isBalancedClub(sameClubPlayerAmountList)){
+                System.out.println(clubName + " -- " + sameClubPlayerAmountList);
+                balancedPoolsBySwitchPlayers(distributedPools, clubName, sameClubPlayerAmountList);
+                sameClubPlayerAmountList = getSameClubPlayerAmountList(distributedPools, clubName);
+                System.out.println(clubName + " -- " + sameClubPlayerAmountList);
+                i = 0;
+            }
+        }
+    }
+
+    public void balancedPoolsBySwitchPlayers(ArrayList<ArrayList<Competitor>> distributedPools, String notBalancedClubName, ArrayList<Integer> sameClubPlayerAmountList){
+
+        Pool sourcePool = new Pool();
+        Pool destinatePool = new Pool();
+
+        for (int i=0; i<sameClubPlayerAmountList.size(); i++){
+            if (sameClubPlayerAmountList.get(i).equals(Collections.max(sameClubPlayerAmountList))){
+                sourcePool = new Pool(distributedPools.get(i));
+            }
+            else if (sameClubPlayerAmountList.get(i).equals(Collections.min(sameClubPlayerAmountList))){
+                destinatePool = new Pool(distributedPools.get(i));
             }
         }
 
-        return notBalancedClubsList;
+        for (Competitor sourcePlayer : sourcePool.getPlayerListWithClub(notBalancedClubName)){
+            System.out.println("\n" + sourcePlayer.getFirstName() + " " + sourcePlayer.getLastName());
+
+            if (destinatePool.getBestCandidateWithSameRankLevel(sourcePlayer, sourcePool.getClubSet()) != null){
+
+                Competitor destinatePlayer = destinatePool.getBestCandidateWithSameRankLevel(sourcePlayer, sourcePool.getClubSet());
+
+                System.out.println("--> " + destinatePlayer.getFirstName() + " " + destinatePlayer.getLastName());
+
+                sourcePool.switchPlayer(sourcePlayer, destinatePlayer);
+                destinatePool.switchPlayer(destinatePlayer, sourcePlayer);
+
+                break;
+            }
+        }
     }
 
     public static void main(String[] args) {
 
-        String inputCSVFilePath = "C:\\Users\\Zhenkuang\\Desktop\\poolmaker\\MEconflicts.csv";
+        String inputCSVFilePath = "C:\\Users\\zhenkuang.he\\Desktop\\Job\\poolmaker\\MEconflicts.csv";
 
         ArrayList<Competitor> competitorsList;
         ArrayList<Competitor> sortedCompetitorsList;
@@ -179,44 +226,44 @@ public class PoolMaker {
         ArrayList<ArrayList<Competitor>> distributedPools;
         PoolMaker poolMaker = new PoolMaker();
 
-        System.out.println("\nORIGINAL LIST --------\n");
+//        System.out.println("\nORIGINAL LIST --------\n");
         competitorsList = poolMaker.generateCompetitorListFromInputCSVFile(inputCSVFilePath);
-        for (Competitor competitor : competitorsList) {
-            System.out.println(competitor.getFirstName() + "    "
-                    + competitor.getLastName() + "    "
-                    + competitor.getClubName() + "    "
-                    + competitor.getRankLevel());
-        }
+//        for (Competitor competitor : competitorsList) {
+//            System.out.println(competitor.getFirstName() + "    "
+//                    + competitor.getLastName() + "    "
+//                    + competitor.getClubName() + "    "
+//                    + competitor.getRankLevel());
+//        }
 
 
-        System.out.println("\nSORT LIST --------\n");
+//        System.out.println("\nSORT LIST --------\n");
         sortedCompetitorsList = poolMaker.sortCompetitorByRankLevel(competitorsList);
-        for (Competitor competitor : sortedCompetitorsList) {
-            System.out.println(competitor.getFirstName() + "    "
-                    + competitor.getLastName() + "    "
-                    + competitor.getClubName() + "    "
-                    + competitor.getRankLevel());
-        }
+//        for (Competitor competitor : sortedCompetitorsList) {
+//            System.out.println(competitor.getFirstName() + "    "
+//                    + competitor.getLastName() + "    "
+//                    + competitor.getClubName() + "    "
+//                    + competitor.getRankLevel());
+//        }
 
 
-        System.out.println("\nPOOL DISTRIBUTED CHAIN LIST --------\n");
+//        System.out.println("\nPOOL DISTRIBUTED CHAIN LIST --------\n");
         distributedPoolChainList = poolMaker.generateDistributedPoolChainList(sortedCompetitorsList.size());
 
-        int[] poolSize = new int[Collections.max(distributedPoolChainList)];
+//        int[] poolSize = new int[Collections.max(distributedPoolChainList)];
+//
+//        for (int n : distributedPoolChainList) {
+//            poolSize[n - 1] = poolSize[n - 1] + 1;
+//        }
+//
+//        System.out.println(distributedPoolChainList);
+//        System.out.println("List Length = " + distributedPoolChainList.size());
+//
+//        for (int i = 0; i < poolSize.length; i++) {
+//            System.out.println("Pool " + (i + 1) + ": " + poolSize[i]);
+//        }
 
-        for (int n : distributedPoolChainList) {
-            poolSize[n - 1] = poolSize[n - 1] + 1;
-        }
 
-        System.out.println(distributedPoolChainList);
-        System.out.println("List Length = " + distributedPoolChainList.size());
-
-        for (int i = 0; i < poolSize.length; i++) {
-            System.out.println("Pool " + (i + 1) + ": " + poolSize[i]);
-        }
-
-
-        System.out.println("\nPOOL LIST --------\n");
+//        System.out.println("\nPOOL LIST --------\n");
         distributedPools = poolMaker.generateDistributedPools(sortedCompetitorsList, distributedPoolChainList);
 
         for (int i = 1; i <= distributedPools.size(); i++) {
@@ -232,7 +279,10 @@ public class PoolMaker {
         }
 
         Set<String> fullClubSet = poolMaker.getFullClubSet(competitorsList);
-        System.out.println(fullClubSet);
+        System.out.println("\n"+fullClubSet+"\n");
+
+        poolMaker.handleNotBalancedClub(distributedPools, fullClubSet);
+
 
     }
 }

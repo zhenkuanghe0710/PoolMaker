@@ -42,6 +42,20 @@ public class Pool {
         }
     }
 
+    public ArrayList<Competitor> getFullPlayerList(){
+        return playerList;
+    }
+
+    public ArrayList<Competitor> getPlayerListWithClub(String clubName){
+        ArrayList<Competitor> playerListWithClub =  new ArrayList<>();
+        for (Competitor player : playerList) {
+            if (player.getClubName().equals(clubName)) {
+                playerListWithClub.add(player);
+            }
+        }
+        return playerListWithClub;
+    }
+
     public int getClubAmount(String clubName) {
         int count = 0;
         for (Competitor player : playerList) {
