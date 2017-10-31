@@ -6,16 +6,13 @@ public class draftTest {
         int L = 17;
         int r = 0;
 
-        if (L%6 - L/6 <= 0) {
+        if (L % 6 - L / 6 <= 0) {
             r = L / 6;
-        }
-        else if (L%7 - L/7 <= 0) {
+        } else if (L % 7 - L / 7 <= 0) {
             r = L / 7;
-        }
-        else if (L%8 == 0) {
+        } else if (L % 8 == 0) {
             r = L / 8;
-        }
-        else if (L%5 - L/5 <= 0) {
+        } else if (L % 5 - L / 5 <= 0) {
             r = L / 5;
         }
 
@@ -24,7 +21,7 @@ public class draftTest {
         int inv = 1;
 
 
-        for (int i=L; i>0; i--){
+        for (int i = L; i > 0; i--) {
             numbers.add(pn);
             if (pn == r) {
                 inv = -1;
@@ -50,15 +47,15 @@ public class draftTest {
 
         int[] poolSize = new int[r];
 
-        for (int n : numbers){
-            poolSize[n-1] = poolSize[n-1] + 1;
+        for (int n : numbers) {
+            poolSize[n - 1] = poolSize[n - 1] + 1;
         }
 
         System.out.println(numbers);
         System.out.println("List Length = " + numbers.size());
 
-        for (int i=0; i<poolSize.length; i++){
-            System.out.println("Pool " + (i+1) + ": " + poolSize[i]);
+        for (int i = 0; i < poolSize.length; i++) {
+            System.out.println("Pool " + (i + 1) + ": " + poolSize[i]);
         }
 
 

@@ -12,35 +12,35 @@ public class Competitor {
         this.rankLevel = rankLevel;
     }
 
-    public String getFirstName(){
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName){
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName(){
+    public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName){
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getClubName(){
+    public String getClubName() {
         return clubName;
     }
 
-    public void setClubName(String clubName){
+    public void setClubName(String clubName) {
         this.clubName = clubName;
     }
 
-    public String getRankLevel(){
+    public String getRankLevel() {
         return rankLevel;
     }
 
-    public void setRankLevel(String rankLevel){
+    public void setRankLevel(String rankLevel) {
         this.rankLevel = rankLevel;
     }
 }
