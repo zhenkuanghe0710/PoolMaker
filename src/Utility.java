@@ -24,9 +24,9 @@ public class Utility {
             }
 
             if (levelLetter_1 != levelLetter_2) {
-                return Character.compare(levelLetter_1, levelLetter_2);
+                return Character.compare(levelLetter_1, levelLetter_2) * -1;
             } else
-                return Integer.compare(levelNumber_1, levelNumber_2) * -1;
+                return Integer.compare(levelNumber_1, levelNumber_2);
         };
 
         return rankLevelComparator;
