@@ -1,18 +1,24 @@
+import java.util.ArrayList;
+
 public class Competitor {
 
     private String firstName;
     private String lastName;
     private String clubName;
     private String rankLevel;
+    private ArrayList<Competitor> playersSwappedList;
 
     public Competitor(String lastName, String firstName, String clubName, String rankLevel) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.clubName = clubName;
         this.rankLevel = rankLevel;
+        this.playersSwappedList = new ArrayList<>();
     }
 
-    public String getFirstName() { return firstName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -41,4 +47,8 @@ public class Competitor {
     public void setRankLevel(String rankLevel) {
         this.rankLevel = rankLevel;
     }
+
+    public ArrayList<Competitor> getPlayersSwappedList() { return playersSwappedList; }
+
+    public void addSwappedPlayer(Competitor player) { playersSwappedList.add(player); }
 }

@@ -9,37 +9,21 @@ public class Pool {
         playerList = new ArrayList<>();
     }
 
-    public Pool(ArrayList<Competitor> playerList) {
-        this.playerList = playerList;
-    }
-
-    public boolean addPlayer(Competitor player) {
+    public void addPlayer(Competitor player) {
         if (!playerList.contains(player)) {
             playerList.add(player);
-            return true;
-        } else {
-            return false;
         }
-
     }
 
-    public boolean removePlayer(Competitor player) {
+    public void removePlayer(Competitor player) {
         if (playerList.contains(player)) {
             playerList.remove(player);
-            return true;
-        } else {
-            return false;
         }
     }
 
-    public boolean switchPlayer(Competitor player_out, Competitor player_in) {
-        if (playerList.contains(player_out)) {
-            playerList.remove(player_out);
-            playerList.add(player_in);
-            return true;
-        } else {
-            return false;
-        }
+    public void switchPlayer(Competitor player_out, Competitor player_in) {
+        removePlayer(player_out);
+        addPlayer(player_in);
     }
 
     public ArrayList<Competitor> getFullPlayerList() {
@@ -68,16 +52,6 @@ public class Pool {
         return lowestRankPlayer;
     }
 
-    public int getClubAmount(String clubName) {
-        int count = 0;
-        for (Competitor player : playerList) {
-            if (player.getClubName().equals(clubName)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     public Set<String> getClubSet() {
         Set<String> clubSet = new HashSet<>();
         for (Competitor player : playerList) {
@@ -98,7 +72,7 @@ public class Pool {
 
         for (Competitor player : playerList) {
             if (rankLevelComparator.compare(sourcePlayer, player) == 0) {
-                if (!isSameClub(sourcePlayer, player)) {
+                if (!isSameClub(sourcePlayer, player) && !sourcePlayer.getPlayersSwappedList().contains(player)) {
                     candidateList.add(player);
                 }
             }
@@ -121,7 +95,7 @@ public class Pool {
 
         for (Competitor player : playerList) {
             if (rankLevelComparator.compare(sourcePlayer, player) > 0) {
-                if (!isSameClub(sourcePlayer, player)) {
+                if (!isSameClub(sourcePlayer, player) && !sourcePlayer.getPlayersSwappedList().contains(player)) {
                     if (candidateList.size() == 0 || rankLevelComparator.compare(candidateList.get(0), player) == 0) {
                         candidateList.add(player);
                     }

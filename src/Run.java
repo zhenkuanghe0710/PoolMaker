@@ -2,10 +2,16 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class Run {
-    public static void main(String[] args) {
 
-        String inputCSVFilePath = "C:\\Users\\Zhenkuang\\Desktop\\poolmaker\\MEentries.csv";
+    public static void main(String[] args) throws InterruptedException {
+        String inputCSVFilePath = args[0]; //Input file path
+        //String inputCSVFilePath = "C:\\Users\\zhenkuang.he\\Desktop\\Job\\poolmaker\\MEConflicts2.csv";
+        Run run = new Run();
 
+        run.runPoolMaker(inputCSVFilePath);
+    }
+
+    public void runPoolMaker(String inputCSVFilePath) throws InterruptedException {
         ArrayList<Competitor> competitorsList;
         ArrayList<Competitor> sortedCompetitorsList;
         ArrayList<Integer> distributedPoolChainList;
@@ -21,17 +27,7 @@ public class Run {
 
         poolMaker.handleNotBalancedClub(distributedPools, fullClubSet);
 
-        System.out.println("\nPOOL LIST --------\n");
-        for (int i = 1; i <= distributedPools.size(); i++) {
-            System.out.println(String.format("\n--)------- Pool # %d -------(-- (%d)", i, distributedPools.get(i - 1).getFullPlayerList().size()));
-
-            for (Competitor competitor : distributedPools.get(i - 1).getFullPlayerList()) {
-                System.out.println(competitor.getFirstName() + "    "
-                        + competitor.getLastName() + "    "
-                        + competitor.getClubName() + "    "
-                        + competitor.getRankLevel());
-            }
-
-        }
+        poolMaker.printCompetitorList(sortedCompetitorsList);
+        poolMaker.printPoolsList(distributedPools);
     }
 }

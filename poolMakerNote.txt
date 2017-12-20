@@ -1,0 +1,19 @@
+1. Loop for all club, check if the club balance.
+2. If not, come to switch player.
+	1) select source pool (has max player with same club), destinate pool (has min player with same club)
+	2) Same level
+		a. loop for all source players (until trade made)
+		b. get best candidate (compare with the source player):
+			i) Not in same club
+			ii) Has not trade with the same player before
+			iii) If more than 1 candidate, prefer A. has no club, B. the course club doesn't has that club, or choose the first pick
+		c. trade players
+	3) Lower level
+		a. Use the lowest rank player with the club in the source pool
+		b. get best candidate (compare with the source player):
+			i) Rank lower than the source player
+			ii) Has not trade with the same player before
+			iii) Take the highest rank of the player wich lower than the source player.
+			iiii) If more than 1 candidate, prefer A. has no club, B. the course club doesn't has that club, or choose the first pick
+		c. trade players
+3. Once one trade made, loop for all club from the beginning again. Until all the club are balance.

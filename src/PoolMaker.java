@@ -152,15 +152,12 @@ public class PoolMaker {
             sameClubPlayerAmountList = getSameClubPlayerAmountList(distributedPools, clubName);
 
             if (sameClubPlayerAmountList != null && !isBalancedClub(sameClubPlayerAmountList)) {
-//                System.out.println(clubName + " -- " + sameClubPlayerAmountList);
                 balancedPoolsBySwitchPlayers(distributedPools, clubName, sameClubPlayerAmountList);
-//                sameClubPlayerAmountList = getSameClubPlayerAmountList(distributedPools, clubName);
-//                System.out.println(clubName + " -- " + sameClubPlayerAmountList + "\n");
                 i = 0;
             }
         }
 
-        for (Pool pool : distributedPools){
+            for (Pool pool : distributedPools) {
             pool.getFullPlayerList().sort(Utility.getRankLevelComparator().reversed());
         }
     }
@@ -187,7 +184,6 @@ public class PoolMaker {
             for (Pool destPool : destinatePoolList) {
                 if (destPool.getBestCandidateWithSameRankLevel(sourcePlayer, sourcePool.getClubSet()) != null) {
                     Competitor candidatePlayer = destPool.getBestCandidateWithSameRankLevel(sourcePlayer, sourcePool.getClubSet());
-//                    System.out.println("||--> " + candidatePlayer.getFirstName() + " " + candidatePlayer.getLastName() + " " + candidatePlayer.getClubName() + " " + candidatePlayer.getRankLevel());
 
                     if ((destinatePlayer == null && destinatePool == null) || isBetterCandidate(candidatePlayer, destinatePlayer, sourcePool.getClubSet())) {
                         destinatePlayer = candidatePlayer;
@@ -197,11 +193,10 @@ public class PoolMaker {
             }
 
             if (destinatePlayer != null) {
-//                System.out.println("TRADED WITH SAME LEVEL PLAYERS");
-//                System.out.println(sourcePlayer.getFirstName() + " " + sourcePlayer.getLastName() + " " + sourcePlayer.getClubName() + " " + sourcePlayer.getRankLevel());
-//                System.out.println("--> " + destinatePlayer.getFirstName() + " " + destinatePlayer.getLastName() + " " + destinatePlayer.getClubName() + " " + destinatePlayer.getRankLevel());
                 sourcePool.switchPlayer(sourcePlayer, destinatePlayer);
                 destinatePool.switchPlayer(destinatePlayer, sourcePlayer);
+                sourcePlayer.addSwappedPlayer(destinatePlayer);
+                destinatePlayer.addSwappedPlayer(sourcePlayer);
                 tradeMade = true;
                 break;
             }
@@ -216,7 +211,6 @@ public class PoolMaker {
             for (Pool destPool : destinatePoolList) {
                 if (destPool.getBestCandidateWithLowerRankLevel(sourcePlayer, sourcePool.getClubSet()) != null) {
                     Competitor candidatePlayer = destPool.getBestCandidateWithLowerRankLevel(sourcePlayer, sourcePool.getClubSet());
-//                    System.out.println("||--> " + candidatePlayer.getFirstName() + " " + candidatePlayer.getLastName() + " " + candidatePlayer.getClubName() + " " + candidatePlayer.getRankLevel());
 
                     if ((destinatePlayer == null && destinatePool == null) || isBetterCandidate(candidatePlayer, destinatePlayer, sourcePool.getClubSet())) {
                         destinatePlayer = candidatePlayer;
@@ -226,11 +220,10 @@ public class PoolMaker {
             }
 
             if (destinatePlayer != null) {
-//                System.out.println("TRADED WITH LOWER LEVEL PLAYERS");
-//                System.out.println(sourcePlayer.getFirstName() + " " + sourcePlayer.getLastName() + " " + sourcePlayer.getClubName() + " " + sourcePlayer.getRankLevel());
-//                System.out.println("--> " + destinatePlayer.getFirstName() + " " + destinatePlayer.getLastName() + " " + destinatePlayer.getClubName() + " " + destinatePlayer.getRankLevel());
                 sourcePool.switchPlayer(sourcePlayer, destinatePlayer);
                 destinatePool.switchPlayer(destinatePlayer, sourcePlayer);
+                sourcePlayer.addSwappedPlayer(destinatePlayer);
+                destinatePlayer.addSwappedPlayer(sourcePlayer);
             }
         }
     }
@@ -246,5 +239,31 @@ public class PoolMaker {
         }
 
         return false;
+    }
+
+    public void printCompetitorList(ArrayList<Competitor> competitorsList) {
+        System.out.println("\nCompetitor List");
+        for (Competitor competitor : competitorsList) {
+            System.out.println(competitor.getFirstName() + "    "
+                    + competitor.getLastName() + "    "
+                    + competitor.getClubName() + "    "
+                    + competitor.getRankLevel().substring(0, 1) + "    "
+                    + competitor.getRankLevel().substring(1));
+        }
+    }
+
+    public void printPoolsList(ArrayList<Pool> distributedPools) {
+        System.out.println("\nPool List");
+        for (int i = 1; i <= distributedPools.size(); i++) {
+            System.out.println(String.format("\n--)------- Pool # %d -------(-- (%d)", i, distributedPools.get(i - 1).getFullPlayerList().size()));
+
+            for (Competitor competitor : distributedPools.get(i - 1).getFullPlayerList()) {
+                System.out.println(competitor.getFirstName() + "    "
+                        + competitor.getLastName() + "    "
+                        + competitor.getClubName() + "    "
+                        + competitor.getRankLevel().substring(0, 1) + "    "
+                        + competitor.getRankLevel().substring(1));
+            }
+        }
     }
 }
